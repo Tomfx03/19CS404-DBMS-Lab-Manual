@@ -1,85 +1,54 @@
-# Experiment 1: Entity-Relationship (ER) Diagram
+# ER Diagram Workshop – Submission Template
 
-## Objective:
-To understand and apply the concepts of ER modeling by creating an ER diagram for a real-world application.
+## Objective
+To understand and apply ER modeling concepts by creating ER diagrams for real-world applications.
 
-##  Purpose:
-The purpose of this workshop is to gain hands-on experience in designing ER diagrams that visually represent the structure of a database including entities, relationships, attributes, and constraints.
-
----
-
-##  Choose One Scenario:
-
-### Scenario 1: University Database
-Design a database to manage students, instructors, programs, courses, and student enrollments. Include prerequisites for courses.
-
-**User Requirements:**
-- Academic programs grouped under departments.
-- Students have admission number, name, DOB, contact info.
-- Instructors with staff number, contact info, etc.
-- Courses have number, name, credits.
-- Track course enrollments by students and enrollment date.
-- Add support for prerequisites (some courses require others).
+## Purpose
+Gain hands-on experience in designing ER diagrams that represent database structure including entities, relationships, attributes, and constraints.
 
 ---
 
-### Scenario 2: Hospital Database
-Design a database for patient management, appointments, medical records, and billing.
+# Scenario A: City Fitness Club Managements
 
-**User Requirements:**
-- Patient details including contact and insurance.
-- Doctors and their departments, contact info, specialization.
-- Appointments with reason, time, patient-doctor link.
-- Medical records with treatments, diagnosis, test results.
-- Billing and payment details for each appointment.
+**Business Context:**  
+FlexiFit Gym wants a database to manage its members, trainers, and fitness programs.
+
+**Requirements:**  
+- Members register with name, membership type, and start date.  
+- Each member can join multiple programs (Yoga, Zumba, Weight Training).  
+- Trainers assigned to programs; a program may have multiple trainers.  
+- Members may book personal training sessions with trainers.  
+- Attendance recorded for each session.  
+- Payments tracked for memberships and sessions.
+
+### ER Diagram:
+
+<img width="958" height="761" alt="image" src="https://github.com/user-attachments/assets/56474a0d-08ef-475c-8d48-eaef8ef4bcd2" />
+
+### Entities and Attributes
+
+| **Entity**     | **Attributes (PK, FK)**                                                                                                        | **Notes**                                       |
+| -------------- | ------------------------------------------------------------------------------------------------------------------------------ | ----------------------------------------------- |
+| **Member**     | **PK:** Member\_id <br> Attributes: Name, Membership\_type                                                                     | Stores details of gym members                   |
+| **Trainer**    | **PK:** Trainer\_id <br> Attributes: Name, Specialization                                                                      | Stores trainer details                          |
+| **Program**    | **PK:** Program\_id <br> Attributes: Program\_name, Description, Schedule                                                      | Training programs offered                       |
+| **Session**    | **PK:** Session\_id <br> **FKs:** Member\_id, Trainer\_id, Program\_id <br> Attributes: Session\_type, Session\_schedule       | Represents a training session                   |
+| **Payment**    | **PK:** Payment\_id <br> **FKs:** Member\_id, Session\_id <br> Attributes: Payment\_date, Amount, Payment\_type, Reference\_id | Stores payment records for memberships/sessions |
+| **Attendance** | **PK:** Attendance\_id <br> **FKs:** Member\_id, Session\_id <br> Attributes: Status                                           | Tracks member attendance in sessions            |
+
+### Relationships and Constraints
+
+| **Relationship**          | **Entities Involved** | **Cardinality**              | **Participation**                     | **Notes**                                                                      |
+| ------------------------- | --------------------- | ---------------------------- | ------------------------------------- | ------------------------------------------------------------------------------ |
+| **Assigned\_by**          | Member – Trainer      | 1 Trainer : Many Members     | Member (Total), Trainer (Partial)     | Each member must be assigned a trainer; a trainer may train multiple members   |
+| **Specified\_course**     | Session – Program     | Many Sessions : 1 Program    | Session (Total), Program (Partial)    | Each session belongs to a program; a program may have multiple sessions        |
+| **Specified\_time**       | Member – Session      | 1 Member : Many Sessions     | Member (Partial), Session (Total)     | A member can have many sessions; each session is scheduled for one member      |
+| **Amount\_collected**     | Session – Payment     | 1 Session : Many Payments    | Session (Partial), Payment (Total)    | A session may have multiple payments; each payment must be linked to a session |
+| **Presence\_in\_session** | Attendance – Session  | Many Attendances : 1 Session | Attendance (Total), Session (Partial) | Tracks attendance per session; each attendance record belongs to one session   |
+
+### Assumptions
+- All IDs (Member_id, Trainer_id, Program_id, Session_id, Payment_id, Attendance_id) are primary keys and unique.
+- Foreign key relationships ensure referential integrity (e.g., a payment cannot exist without a valid member and session).
+- The system assumes each member is assigned at least one trainer and the system records both financial (payments) and non-financial (attendance, schedules) aspects of gym operations.
 
 ---
-
-## 📝 Tasks:
-1. Identify entities, relationships, and attributes.
-2. Draw the ER diagram using any tool (draw.io, dbdiagram.io, hand-drawn and scanned).
-3. Include:
-   - Cardinality & participation constraints
-   - Prerequisites for University OR Billing for Hospital
-4. Explain:
-   - Why you chose the entities and relationships.
-   - How you modeled prerequisites or billing.
-
-# ER Diagram Submission - Tom francies xaviour L
-
-## Scenario Chosen:
-University 
-
-## ER Diagram:
-![Screenshot 2025-05-06 112346](https://github.com/user-attachments/assets/44d8dc7c-7a8e-4ad1-92c0-79c5df26bc14)
-
-
-
-## Entities and Attributes:
-Student-(Register No, Name, dob, EmailId, Mobile No)
-
-Department -(department name, hod)
-
-Course-(course name, course no, no. of credits)
-
-Faculty- (Staff Id, mobile no, name, email)
-
-Prerequisite Courses- (course name, credits)
-
-
-## Relationships and Constraints:
-- Belongs to (Student, Department)
-- Enrolls in (Student, Course)
-- Offers (Department, Course)
-- Handled by (Course, Faculty)
-- Has prerequisites (Course, Prerequisite Courses)
-- Belongs to (Faculty, Department)
-
-## Extension (Prerequisite / Billing):
-- The ER diagram models prerequisites using the has prerequisites relationship connecting Course to the Prerequisite Courses entity. This separate entity stores details like course name and credits for each prerequisite. This design allows a course to have multiple prerequisites, each with specific attributes, avoiding multi-valued attributes in the Course entity. The implied Many-to-Many relationship signifies that one course can have several prerequisites, and a course can be a prerequisite for many others. This approach ensures a flexible and normalized representation of prerequisite dependencies within the database.
-
-## Design Choices:
-The entities in this ER diagram—Student, Department, Course, and Faculty—were chosen as they represent the core organizational units and actors within a typical academic institution. Students are the primary subjects of study, Departments are the administrative and academic groupings, Courses are the units of instruction, and Faculty are the educators and researchers. The relationships model the natural interactions between these entities: students belong to departments and enroll in courses; departments offer courses and faculty belong to and handle them; and courses have prerequisites. The inclusion of "Prerequisite Courses" as a separate entity, linked by the "has prerequisites" relationship, addresses the need to capture potentially multiple and attribute-rich prerequisite information for each course without complicating the main "Course" entity. Key assumptions include that every student and faculty member is associated with one department (total participation), and that the curriculum is structured around courses offered by departments and potentially requiring other courses as prerequisites. The Many-to-Many cardinalities for "enrolls in" and "handled by" reflect the reality that students take multiple courses and faculty teach multiple courses.
-
-## RESULT
-Thus the ER diagram for the university database is successfully developed.
